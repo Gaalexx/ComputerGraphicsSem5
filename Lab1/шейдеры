@@ -1,0 +1,13 @@
+vertex_shader_module = loadShaderModule("/home/gaalex/MAI/5sem/CG/Lab1/veekay/shaders/shader.vert.spv");
+		if (!vertex_shader_module) {
+			std::cerr << "Failed to load Vulkan vertex shader from file\n";
+			veekay::app.running = false;
+			return;
+		}
+
+		fragment_shader_module = loadShaderModule("/home/gaalex/MAI/5sem/CG/Lab1/veekay/shaders/shader.frag.spv");
+		if (!fragment_shader_module) {
+			std::cerr << "Failed to load Vulkan fragment shader from file\n";
+			veekay::app.running = false;
+			return;
+		}
