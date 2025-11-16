@@ -28,9 +28,30 @@ namespace
 		// NOTE: You can add more attributes
 	};
 
+	struct PointLight {
+		veekay::vec3 position; float _pad0;
+		veekay::vec3 color; float _pad1;
+	};
+
+	struct DirectionalLight {
+		veekay::vec3 direction; float _pad0;
+		veekay::vec3 color; float _pad1;
+	};
+
+	struct SpotLight {
+		veekay::vec3 position; float _pad0;
+		veekay::vec3 direction; float _pad1;
+		veekay::vec3 color; float cutoff;
+	};
+
 	struct SceneUniforms
 	{
 		veekay::mat4 view_projection;
+		veekay::vec3 camera_position; float _pad0;
+		veekay::vec3 ambient_light; float _pad1;
+		PointLight point_light;
+		DirectionalLight directional_light;
+		SpotLight spot_light;
 	};
 
 	struct ModelUniforms
@@ -91,6 +112,12 @@ namespace
 			.position = {0.0f, -0.5f, -3.0f}};
 
 		std::vector<Model> models;
+
+		bool enable_ambient = true;
+		bool enable_point_light = true;
+		bool enable_directional_light = true;
+		bool enable_spot_light = true;
+		float spot_light_angle = 25.0f;
 	}
 
 	// NOTE: Vulkan objects
@@ -723,23 +750,39 @@ namespace
 	void update(double time)
 	{
 		ImGui::Begin("Controls:");
+		ImGui::Text("Camera: (%.1f, %.1f, %.1f)", camera.position.x, camera.position.y, camera.position.z);
+		ImGui::Text("Rotation: (%.1f, %.1f)", camera.rotation.x, camera.rotation.y);
+		ImGui::Separator();
+		ImGui::Text("Lights:");
+		ImGui::Checkbox("Ambient", &enable_ambient);
+		ImGui::Checkbox("Point Light", &enable_point_light);
+		ImGui::Checkbox("Directional Light", &enable_directional_light);
+		ImGui::Checkbox("Spot Light", &enable_spot_light);
+		if (enable_spot_light) {
+			ImGui::SliderFloat("Spot Angle", &spot_light_angle, 5.0f, 90.0f);
+		}
 		ImGui::End();
 
 		if (!ImGui::IsWindowHovered())
 		{
 			using namespace veekay::input;
 
-			if (mouse::isButtonDown(mouse::Button::left))
+			if (mouse::isButtonDown(mouse::Button::right))
 			{
+				mouse::setCaptured(true);
 				auto move_delta = mouse::cursorDelta();
 
 				camera.rotation.y += move_delta.x * 0.2f;
-				camera.rotation.x -= move_delta.y * 0.2f;
+				camera.rotation.x += move_delta.y * 0.2f;
 
 				if (camera.rotation.x > 89.0f)
 					camera.rotation.x = 89.0f;
 				if (camera.rotation.x < -89.0f)
 					camera.rotation.x = -89.0f;
+			}
+			else
+			{
+				mouse::setCaptured(false);
 			}
 
 			float yaw_rad = toRadians(camera.rotation.y);
@@ -774,9 +817,32 @@ namespace
 				camera.position -= up * 0.1f;
 		}
 
+		float yaw_rad = toRadians(camera.rotation.y);
+		float pitch_rad = toRadians(-camera.rotation.x);
+		veekay::vec3 spot_direction = veekay::vec3::normalized({
+			cosf(pitch_rad) * sinf(yaw_rad),
+			sinf(pitch_rad),
+			cosf(pitch_rad) * cosf(yaw_rad)});
+
 		float aspect_ratio = float(veekay::app.window_width) / float(veekay::app.window_height);
 		SceneUniforms scene_uniforms{
 			.view_projection = camera.view_projection(aspect_ratio),
+			.camera_position = camera.position,
+			.ambient_light = enable_ambient ? veekay::vec3{0.1f, 0.1f, 0.1f} : veekay::vec3{0.0f, 0.0f, 0.0f},
+			.point_light = {
+				.position = {0.0f, -2.0f, 0.0f},
+				.color = enable_point_light ? veekay::vec3{1.0f, 1.0f, 1.0f} : veekay::vec3{0.0f, 0.0f, 0.0f}
+			},
+			.directional_light = {
+				.direction = veekay::vec3::normalized({0.3f, 1.0f, 0.5f}),
+				.color = enable_directional_light ? veekay::vec3{0.8f, 0.8f, 0.8f} : veekay::vec3{0.0f, 0.0f, 0.0f}
+			},
+			.spot_light = {
+				.position = camera.position,
+				.direction = spot_direction,
+				.color = enable_spot_light ? veekay::vec3{50.0f, 50.0f, 50.0f} : veekay::vec3{0.0f, 0.0f, 0.0f},
+				.cutoff = cosf(toRadians(spot_light_angle))
+			}
 		};
 
 		std::vector<ModelUniforms> model_uniforms(models.size());

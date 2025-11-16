@@ -24,6 +24,6 @@ void main() {
 	gl_Position = view_projection * position;
 
 	f_position = position.xyz;
-	f_normal = normal.xyz;
+	f_normal = normalize(normal.xyz);
 	f_uv = v_uv;
 }
