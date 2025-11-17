@@ -58,6 +58,8 @@ namespace
 	{
 		veekay::mat4 model;
 		veekay::vec3 albedo_color;
+		float shininess;
+		veekay::vec3 specular_color;
 		float _pad0;
 	};
 
@@ -83,6 +85,8 @@ namespace
 		Mesh mesh;
 		Transform transform;
 		veekay::vec3 albedo_color;
+		veekay::vec3 specular_color;
+		float shininess;
 	};
 
 	struct Camera
@@ -121,7 +125,7 @@ namespace
 
 		float dir_light_intensity = 1.0f;
 		float spot_light_intensity = 1.0f;
-		float ambient_light_intensity = 1.0f;
+		float ambient_light_intensity = 0.3f;
 		float point_light_intensity = 1.0f;
 	}
 
@@ -702,28 +706,36 @@ namespace
 		models.emplace_back(Model{
 			.mesh = plane_mesh,
 			.transform = Transform{},
-			.albedo_color = veekay::vec3{1.0f, 1.0f, 1.0f}});
+			.albedo_color = veekay::vec3{1.0f, 1.0f, 1.0f},
+			.specular_color = veekay::vec3{0.5f, 0.5f, 0.5f},
+			.shininess = 32.0f});
 
 		models.emplace_back(Model{
 			.mesh = cube_mesh,
 			.transform = Transform{
 				.position = {-2.0f, -0.5f, -1.5f},
 			},
-			.albedo_color = veekay::vec3{1.0f, 0.0f, 0.0f}});
+			.albedo_color = veekay::vec3{1.0f, 0.0f, 0.0f},
+			.specular_color = veekay::vec3{1.0f, 1.0f, 1.0f},
+			.shininess = 64.0f});
 
 		models.emplace_back(Model{
 			.mesh = cube_mesh,
 			.transform = Transform{
 				.position = {1.5f, -0.5f, -0.5f},
 			},
-			.albedo_color = veekay::vec3{0.0f, 1.0f, 0.0f}});
+			.albedo_color = veekay::vec3{0.0f, 1.0f, 0.0f},
+			.specular_color = veekay::vec3{0.8f, 0.8f, 0.8f},
+			.shininess = 128.0f});
 
 		models.emplace_back(Model{
 			.mesh = cube_mesh,
 			.transform = Transform{
 				.position = {0.0f, -0.5f, 1.0f},
 			},
-			.albedo_color = veekay::vec3{0.0f, 0.0f, 1.0f}});
+			.albedo_color = veekay::vec3{0.0f, 0.0f, 1.0f},
+			.specular_color = veekay::vec3{0.3f, 0.3f, 0.3f},
+			.shininess = 16.0f});
 	}
 
 	// NOTE: Destroy resources here, do not cause leaks in your program!
@@ -868,6 +880,8 @@ namespace
 
 			uniforms.model = model.transform.matrix();
 			uniforms.albedo_color = model.albedo_color;
+			uniforms.specular_color = model.specular_color;
+			uniforms.shininess = model.shininess;
 		}
 
 		*(SceneUniforms *)scene_uniforms_buffer->mapped_region = scene_uniforms;
