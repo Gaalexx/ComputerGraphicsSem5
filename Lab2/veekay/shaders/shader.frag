@@ -29,22 +29,22 @@ void main() {
 	vec3 view_dir = normalize(camera_position - f_position);
 	vec3 result = ambient_light * albedo_color;
 	
-	// Point light
+	// точечный
 	vec3 light_dir = normalize(point_pos - f_position);
 	float diff = max(dot(normal, light_dir), 0.0);
 	float distance = length(point_pos - f_position);
 	float attenuation = 1.0 / (1.0 + 0.09 * distance + 0.032 * distance * distance);
 	result += (diff + pow(max(dot(view_dir, reflect(-light_dir, normal)), 0.0), 32.0)) * point_color * attenuation * albedo_color;
 	
-	// Directional light
+	// направленный
 	light_dir = normalize(-dir_dir);
 	diff = max(dot(normal, light_dir), 0.0);
 	result += (diff + pow(max(dot(view_dir, reflect(-light_dir, normal)), 0.0), 32.0)) * dir_color * albedo_color;
 	
-	// Spot light
+	// прожекторный
 	light_dir = normalize(spot_pos - f_position);
 	float theta = dot(light_dir, normalize(spot_dir));
-	float outer_cutoff = cos(radians(acos(spot_cutoff) * 180.0 / 3.14159 + 5.0));
+	float outer_cutoff = cos(acos(spot_cutoff) + radians(5.0));
 	float epsilon = spot_cutoff - outer_cutoff;
 	float intensity = clamp((theta - outer_cutoff) / epsilon, 0.0, 1.0);
 	diff = max(dot(normal, light_dir), 0.0);

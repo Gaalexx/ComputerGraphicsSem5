@@ -118,6 +118,11 @@ namespace
 		bool enable_directional_light = true;
 		bool enable_spot_light = true;
 		float spot_light_angle = 25.0f;
+
+		float dir_light_intensity = 1.0f;
+		float spot_light_intensity = 1.0f;
+		float ambient_light_intensity = 1.0f;
+		float point_light_intensity = 1.0f;
 	}
 
 	// NOTE: Vulkan objects
@@ -755,11 +760,21 @@ namespace
 		ImGui::Separator();
 		ImGui::Text("Lights:");
 		ImGui::Checkbox("Ambient", &enable_ambient);
+		if(enable_ambient){
+			ImGui::SliderFloat("Ambient light intensity", &ambient_light_intensity, 0.0f, 5.0f);
+		}
 		ImGui::Checkbox("Point Light", &enable_point_light);
+		if(enable_point_light){
+			ImGui::SliderFloat("Point light intensity", &point_light_intensity, 0.0f, 5.0f);
+		}
 		ImGui::Checkbox("Directional Light", &enable_directional_light);
+		if(enable_directional_light){
+			ImGui::SliderFloat("Directional light intensity", &dir_light_intensity, 0.0f, 5.0f);
+		}
 		ImGui::Checkbox("Spot Light", &enable_spot_light);
 		if (enable_spot_light) {
 			ImGui::SliderFloat("Spot Angle", &spot_light_angle, 5.0f, 90.0f);
+			ImGui::SliderFloat("Spot light intensity", &spot_light_intensity, 0.0f, 5.0f);
 		}
 		ImGui::End();
 
@@ -788,7 +803,7 @@ namespace
 			float yaw_rad = toRadians(camera.rotation.y);
 			float pitch_rad = toRadians(-camera.rotation.x);
 
-			veekay::vec3 front = {
+			veekay::vec3 front = { // вектор направления камеры
 				cosf(pitch_rad) * sinf(yaw_rad),
 				sinf(pitch_rad),
 				cosf(pitch_rad) * cosf(yaw_rad)};
@@ -828,19 +843,19 @@ namespace
 		SceneUniforms scene_uniforms{
 			.view_projection = camera.view_projection(aspect_ratio),
 			.camera_position = camera.position,
-			.ambient_light = enable_ambient ? veekay::vec3{0.1f, 0.1f, 0.1f} : veekay::vec3{0.0f, 0.0f, 0.0f},
+			.ambient_light = enable_ambient ? veekay::vec3{ambient_light_intensity, ambient_light_intensity, ambient_light_intensity} : veekay::vec3{0.0f, 0.0f, 0.0f},
 			.point_light = {
 				.position = {0.0f, -2.0f, 0.0f},
-				.color = enable_point_light ? veekay::vec3{1.0f, 1.0f, 1.0f} : veekay::vec3{0.0f, 0.0f, 0.0f}
+				.color = enable_point_light ? veekay::vec3{point_light_intensity, point_light_intensity, point_light_intensity} : veekay::vec3{0.0f, 0.0f, 0.0f}
 			},
 			.directional_light = {
 				.direction = veekay::vec3::normalized({0.3f, 1.0f, 0.5f}),
-				.color = enable_directional_light ? veekay::vec3{0.8f, 0.8f, 0.8f} : veekay::vec3{0.0f, 0.0f, 0.0f}
+				.color = enable_directional_light ? veekay::vec3{dir_light_intensity, dir_light_intensity, dir_light_intensity} : veekay::vec3{0.0f, 0.0f, 0.0f}
 			},
 			.spot_light = {
 				.position = camera.position,
 				.direction = spot_direction,
-				.color = enable_spot_light ? veekay::vec3{50.0f, 50.0f, 50.0f} : veekay::vec3{0.0f, 0.0f, 0.0f},
+				.color = enable_spot_light ? veekay::vec3{spot_light_intensity, spot_light_intensity, spot_light_intensity} : veekay::vec3{0.0f, 0.0f, 0.0f},
 				.cutoff = cosf(toRadians(spot_light_angle))
 			}
 		};
