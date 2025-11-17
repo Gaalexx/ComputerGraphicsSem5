@@ -815,7 +815,7 @@ namespace
 			float yaw_rad = toRadians(camera.rotation.y);
 			float pitch_rad = toRadians(-camera.rotation.x);
 
-			veekay::vec3 front = { // вектор направления камеры
+			veekay::vec3 front = {
 				cosf(pitch_rad) * sinf(yaw_rad),
 				sinf(pitch_rad),
 				cosf(pitch_rad) * cosf(yaw_rad)};
@@ -837,10 +837,10 @@ namespace
 			if (keyboard::isKeyDown(keyboard::Key::a))
 				camera.position -= right * 0.1f;
 
-			if (keyboard::isKeyDown(keyboard::Key::e))
+			if (keyboard::isKeyDown(keyboard::Key::q))
 				camera.position += up * 0.1f;
 
-			if (keyboard::isKeyDown(keyboard::Key::q))
+			if (keyboard::isKeyDown(keyboard::Key::e))
 				camera.position -= up * 0.1f;
 		}
 
