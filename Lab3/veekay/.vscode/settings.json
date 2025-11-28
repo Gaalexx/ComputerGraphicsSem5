@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "iostream": "cpp",
+        "string_view": "cpp",
+        "limits": "cpp",
+        "span": "cpp",
+        "sstream": "cpp",
+        "new": "cpp"
+    }
+}
