@@ -752,7 +752,8 @@ namespace
 				return mat;
 			};
 
-			auto tex1 = loadTexture("/home/gaalex/MAI/5sem/CG/Lab3/veekay/assets/lenna.png");
+			auto tex1 = loadTexture("/home/gaalex/MAI/5sem/CG/Lab3/veekay/assets/minecraft.png");
+			auto tex2 = loadTexture("/home/gaalex/MAI/5sem/CG/Lab3/veekay/assets/woman.png");
 			auto sampler1 = createSampler(VK_FILTER_LINEAR, VK_SAMPLER_ADDRESS_MODE_REPEAT);
 			auto sampler2 = createSampler(VK_FILTER_NEAREST, VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE);
 
@@ -764,7 +765,7 @@ namespace
 			materials.push_back(createMaterial(tex1, white_tex, black_tex, sampler1));
 			materials.push_back(createMaterial(white_tex, white_tex, black_tex, sampler2));
 			materials.push_back(createMaterial(tex1, tex1, black_tex, sampler1));
-			materials.push_back(createMaterial(white_tex, black_tex, tex1, sampler2));
+			materials.push_back(createMaterial(white_tex, black_tex, tex2, sampler2));
 		}
 
 		// NOTE: Add models to scene
