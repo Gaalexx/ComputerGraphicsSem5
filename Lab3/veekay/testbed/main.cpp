@@ -752,8 +752,10 @@ namespace
 				return mat;
 			};
 
-			auto tex1 = loadTexture("/home/gaalex/MAI/5sem/CG/Lab3/veekay/assets/minecraft.png");
-			auto tex2 = loadTexture("/home/gaalex/MAI/5sem/CG/Lab3/veekay/assets/woman.png");
+			auto dirt = loadTexture("/home/gaalex/MAI/5sem/CG/Lab3/veekay/assets/minecraft.png");
+			auto woman = loadTexture("/home/gaalex/MAI/5sem/CG/Lab3/veekay/assets/chest.png");
+			auto lamp = loadTexture("/home/gaalex/MAI/5sem/CG/Lab3/veekay/assets/lamp.png");
+			auto grass = loadTexture("/home/gaalex/MAI/5sem/CG/Lab3/veekay/assets/grass.png");
 			auto sampler1 = createSampler(VK_FILTER_LINEAR, VK_SAMPLER_ADDRESS_MODE_REPEAT);
 			auto sampler2 = createSampler(VK_FILTER_NEAREST, VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE);
 
@@ -762,10 +764,10 @@ namespace
 			uint32_t black_pixel = 0xFF000000;
 			auto black_tex = new veekay::graphics::Texture(cmd, 1, 1, VK_FORMAT_R8G8B8A8_UNORM, &black_pixel);
 
-			materials.push_back(createMaterial(tex1, white_tex, black_tex, sampler1));
-			materials.push_back(createMaterial(white_tex, white_tex, black_tex, sampler2));
-			materials.push_back(createMaterial(tex1, tex1, black_tex, sampler1));
-			materials.push_back(createMaterial(white_tex, black_tex, tex2, sampler2));
+			materials.push_back(createMaterial(grass, white_tex, black_tex, sampler1));
+			materials.push_back(createMaterial(woman, white_tex, black_tex, sampler2));
+			materials.push_back(createMaterial(dirt, dirt, black_tex, sampler1));
+			materials.push_back(createMaterial(black_tex, black_tex, lamp, sampler2));
 		}
 
 		// NOTE: Add models to scene
@@ -782,7 +784,7 @@ namespace
 			.transform = Transform{
 				.position = {-2.0f, -0.5f, -1.5f},
 			},
-			.albedo_color = veekay::vec3{1.0f, 0.0f, 0.0f},
+			.albedo_color = veekay::vec3{1.0f, 1.0f, 1.0f},
 			.specular_color = veekay::vec3{1.0f, 1.0f, 1.0f},
 			.shininess = 64.0f,
 			.material = &materials[1]});
@@ -792,7 +794,7 @@ namespace
 			.transform = Transform{
 				.position = {1.5f, -0.5f, -0.5f},
 			},
-			.albedo_color = veekay::vec3{0.0f, 1.0f, 0.0f},
+			.albedo_color = veekay::vec3{1.0f, 1.0f, 1.0f},
 			.specular_color = veekay::vec3{0.8f, 0.8f, 0.8f},
 			.shininess = 128.0f,
 			.material = &materials[2]});
@@ -802,7 +804,7 @@ namespace
 			.transform = Transform{
 				.position = {0.0f, -0.5f, 1.0f},
 			},
-			.albedo_color = veekay::vec3{0.0f, 0.0f, 1.0f},
+			.albedo_color = veekay::vec3{1.0f, 1.0f, 1.0f},
 			.specular_color = veekay::vec3{0.3f, 0.3f, 0.3f},
 			.shininess = 16.0f,
 			.material = &materials[3]});

@@ -31,8 +31,8 @@ layout (binding = 3) uniform sampler2D specular_tex;
 layout (binding = 4) uniform sampler2D emissive_tex;
 
 vec4 sampleNonTrivial(sampler2D tex, vec2 uv) {
-	vec2 uv1 = uv + vec2(sin(uv.y * 10.0) * 0.01, cos(uv.x * 10.0) * 0.01);
-	vec2 uv2 = uv * 2.0;
+	vec2 uv1 = uv + vec2(sin(uv.y * 10.0) * 0.1, cos(uv.x * 10.0) * 0.1);
+	vec2 uv2 = uv * 2.52;
 	vec4 s1 = texture(tex, uv1);
 	vec4 s2 = texture(tex, uv2);
 	return mix(s1, s2, 0.3);
