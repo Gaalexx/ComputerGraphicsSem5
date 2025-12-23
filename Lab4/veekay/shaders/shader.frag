@@ -81,7 +81,7 @@ float calculateShadow(vec4 lightSpacePos, vec3 normal, vec3 lightDir, sampler2DS
         return 1.0;
     }
 
-    float bias = max(0.005 * (1.0 - dot(normal, lightDir)), 0.0005);
+    float bias = max(0.001 * (1.0 - dot(normal, lightDir)), 0.0005);
     float shadow = texture(shadowSampler, vec3(projCoords.xy, projCoords.z - bias));
 
     return shadow;

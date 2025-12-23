@@ -886,7 +886,7 @@ void initialize(VkCommandBuffer cmd) {
         VkDescriptorImageInfo imageInfos[1 + max_shadow_casting_spots];
         VkWriteDescriptorSet writes[1 + max_shadow_casting_spots];
         
-        // Направленный свет
+        // семплер для направленного света
         imageInfos[0].imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL;
         imageInfos[0].imageView = shadow_image_view;
         imageInfos[0].sampler = shadow_sampler;
@@ -902,7 +902,6 @@ void initialize(VkCommandBuffer cmd) {
         writes[0].pBufferInfo = nullptr;
         writes[0].pTexelBufferView = nullptr;
         
-        // Прожекторы
         for (uint32_t i = 0; i < max_shadow_casting_spots; ++i) {
             imageInfos[1 + i].imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL;
             imageInfos[1 + i].imageView = spot_shadow_image_views[i];
@@ -1120,7 +1119,6 @@ void update(double time) {
         ImGui::SliderFloat("Directional light intensity", &dir_light_intensity, 0.0f, 5.0f);
         ImGui::DragFloat3("Directional light dir", &sun_light_direction.x, 0.05f);
     }
-    // Spot light management removed per request (defaults handled below)
     ImGui::End();
 
     if (!ImGui::IsWindowHovered()) {
@@ -1182,7 +1180,6 @@ void update(double time) {
         sinf(pitch_rad),
         cosf(pitch_rad) * cosf(yaw_rad)});
 
-    // Build light lists from simple toggles/sliders
     ambient_lights_intensity = enable_ambient ? veekay::vec3{ambient_light_intensity, ambient_light_intensity, ambient_light_intensity} : veekay::vec3{0.0f, 0.0f, 0.0f};
 
     point_lights.clear();
@@ -1194,7 +1191,6 @@ void update(double time) {
         });
     }
 
-    // No user-managed spotlights in UI; clear to avoid stale data
     spot_lights.clear();
     spot_light_angles.clear();
 

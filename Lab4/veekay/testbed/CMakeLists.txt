@@ -26,6 +26,16 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 	${lodepng_SOURCE_DIR}
 )
 
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+	SHADER_DIR="${CMAKE_SOURCE_DIR}/shaders"
+	ASSETS_DIR="${CMAKE_SOURCE_DIR}/assets"
+)
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+	SHADER_DIR="${CMAKE_SOURCE_DIR}/shaders"
+	ASSETS_DIR="${CMAKE_SOURCE_DIR}/assets"
+)
+
 # Compile shaders
 find_program(GLSLC_FOUND glslc)
 if(GLSLC_FOUND)
@@ -51,6 +61,7 @@ if(GLSLC_FOUND)
 
 	compile_shader(shader.vert)
 	compile_shader(shader.frag)
+	compile_shader(shadow.vert)
 
 	add_custom_target(shaders DEPENDS ${_SHADER_BINARIES})
 	add_dependencies(${PROJECT_NAME} shaders)
